@@ -1,0 +1,9 @@
+<library path="oscar_hardware_intf">
+    <class name="oscar_hardware_intf/OscarHardwareIntf"
+	 type="oscar_hardware_intf::OscarHardwareIntf"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+	    Oscar's hardware interface.
+    </description>
+  </class>
+</library>
