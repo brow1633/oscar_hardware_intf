@@ -25,7 +25,7 @@ void handle_serial_write(int serial_port, float* write_buff) {
 	write(serial_port, &startByte, sizeof(startByte));
 	for(int i = 0; i < 4; i++) {
 		converter.num = write_buff[i];
-		RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"), std::to_string(converter.num).c_str());
+		RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"), "%s", std::to_string(converter.num).c_str());
 		write(serial_port, converter.bytes, 4*sizeof(converter.bytes[0]));
 	}
 }
@@ -42,7 +42,7 @@ namespace oscar_hardware_intf
 			//printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
 			// TODO: THROW ERROR
 			RCLCPP_FATAL(rclcpp::get_logger("OscarHardwareIntf"),
-					strerror(errno)
+					"%s", strerror(errno)
 					);
 			return;
 		}
@@ -78,7 +78,7 @@ namespace oscar_hardware_intf
 		if (tcsetattr(serial_port, TCSANOW, &tty) != 0) {
 			//printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
 			RCLCPP_FATAL(rclcpp::get_logger("OscarHardwareIntf"),
-					strerror(errno)
+					"%s", strerror(errno)
 					);
 			//TODO: THROW ERROR
 			return;
