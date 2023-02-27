@@ -19,6 +19,7 @@ add_library(
 	${PROJECT_NAME}
 	SHARED
 	src/oscar_hardware_intf.cpp
+	src/oscar_simulation_intf.cpp
 )
 
 target_include_directories(
