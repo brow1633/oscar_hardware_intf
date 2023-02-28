@@ -37,6 +37,7 @@ ament_target_dependencies(
 )
 
 pluginlib_export_plugin_description_file(hardware_interface oscar_hardware_intf.xml)
+pluginlib_export_plugin_description_file(hardware_interface oscar_simulation_intf.xml)
 
 install(
 	TARGETS ${PROJECT_NAME}
@@ -71,6 +72,7 @@ ament_export_dependencies(
   pluginlib
   rclcpp
   rclcpp_lifecycle
+  example_interfaces
 )
 
 ament_package()
