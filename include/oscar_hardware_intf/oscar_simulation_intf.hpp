@@ -8,6 +8,7 @@
 #include "hardware_interface/hardware_info.hpp"
 #include "hardware_interface/system_interface.hpp"
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
+#include "rclcpp/rclcpp.hpp"
 #include "rclcpp/clock.hpp"
 #include "rclcpp/duration.hpp"
 #include "rclcpp/macros.hpp"
@@ -15,21 +16,22 @@
 #include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
 #include "rclcpp_lifecycle/state.hpp"
 
-// Linux headers
-#include <fcntl.h> // Contains file controls like O_RDWR
-#include <errno.h> // Error integer and strerror() function
-#include <termios.h> // Contains POSIX terminal control definitions
-#include <unistd.h> // write(), read(), close()
-#include <stdint.h>
-
-//int handle_serial_read(int serial_port, uint8_t* read_buf, size_t max_size);
+#include "oscar_ros_msgs/msg/wheel_speeds.hpp"
 
 namespace oscar_hardware_intf
 {	
-	typedef union {
-	  float num;
-	  uint8_t bytes[4];
-	} byteToFloat;
+    class WheelSpeedPubSub : public rclcpp::Node
+    {
+        public:
+            WheelSpeedPubSub(std::string node_name, std::string pub_name, std::string sub_name);
+            void publish(oscar_ros_msgs::msg::WheelSpeeds& msg);
+            float get_wheel_speed(int WheelIdx);
+        private:
+            void sub_callback(const oscar_ros_msgs::msg::WheelSpeeds::SharedPtr msg);
+            rclcpp::Publisher<oscar_ros_msgs::msg::WheelSpeeds>::SharedPtr publisher_;
+            rclcpp::Subscription<oscar_ros_msgs::msg::WheelSpeeds>::SharedPtr subscription_;
+            oscar_ros_msgs::msg::WheelSpeeds currWheelSpeeds;
+    };
 
 	class OscarSimulationIntf : public hardware_interface::SystemInterface {
 	public:
@@ -44,18 +46,13 @@ namespace oscar_hardware_intf
 		hardware_interface::return_type write(const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
 	private:
-		void setup_serial();
-		int serial_port;
-		struct termios tty;
-
-		float encoder_cpr;
-		int micro_run_freq;
-		std::string serial_port_name;
 		float last_pos;
 
 		std::vector<double> hw_commands_;
 		std::vector<double> hw_positions_;
 		std::vector<double> hw_velocities_;
+
+        std::shared_ptr<WheelSpeedPubSub> node;
 
 		double base_x_, base_y_, base_theta_;
 	};

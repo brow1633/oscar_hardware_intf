@@ -11,6 +11,7 @@ find_package(hardware_interface REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
+find_package(oscar_ros_msgs REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -34,6 +35,7 @@ ament_target_dependencies(
 	pluginlib
 	rclcpp
 	rclcpp_lifecycle
+    oscar_ros_msgs
 )
 
 pluginlib_export_plugin_description_file(hardware_interface oscar_hardware_intf.xml)
