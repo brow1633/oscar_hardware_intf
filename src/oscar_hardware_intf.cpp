@@ -15,7 +15,7 @@
 #include <unistd.h> // write(), read(), close()
 					//
 int handle_serial_read(int serial_port, uint8_t* read_buf, size_t max_size) {
-	RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"), "Reading..");
+	//RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"), "Reading..");
 	return read(serial_port, read_buf, max_size);
 }
 
@@ -25,7 +25,7 @@ void handle_serial_write(int serial_port, float* write_buff) {
 	write(serial_port, &startByte, sizeof(startByte));
 	for(int i = 0; i < 4; i++) {
 		converter.num = write_buff[i];
-		RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"), "%s", std::to_string(converter.num).c_str());
+		//RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"), "%s", std::to_string(converter.num).c_str());
 		write(serial_port, converter.bytes, 4*sizeof(converter.bytes[0]));
 	}
 }
@@ -98,15 +98,15 @@ namespace oscar_hardware_intf
 
 		//hw_start_sec_ = std::stod(info_.hardware_parameters["example_param_hw_start_duration_sec"]); // how to parameter
 		//hw_stop_sec_ = std::stod(info_.hardware_parameters["example_param_hw_stop_duration_sec"]); // how to parameter
-		RCLCPP_INFO(
-				rclcpp::get_logger("OscarHardwareIntf"),
-				"encoder_cpr: %s", info_.hardware_parameters["encoder_cpr"].c_str());
-		RCLCPP_INFO(
-				rclcpp::get_logger("OscarHardwareIntf"),
-				"micro_run_freq: %s", info_.hardware_parameters["micro_run_freq"].c_str());
-		RCLCPP_INFO(
-				rclcpp::get_logger("OscarHardwareIntf"),
-				"serial_port_name: %s", info_.hardware_parameters["serial_port"].c_str());
+//		RCLCPP_INFO(
+//				rclcpp::get_logger("OscarHardwareIntf"),
+//				"encoder_cpr: %s", info_.hardware_parameters["encoder_cpr"].c_str());
+//		RCLCPP_INFO(
+//				rclcpp::get_logger("OscarHardwareIntf"),
+//				"micro_run_freq: %s", info_.hardware_parameters["micro_run_freq"].c_str());
+//		RCLCPP_INFO(
+//				rclcpp::get_logger("OscarHardwareIntf"),
+//				"serial_port_name: %s", info_.hardware_parameters["serial_port"].c_str());
 		encoder_cpr = std::stod(info_.hardware_parameters["encoder_cpr"]);
 		micro_run_freq = std::stod(info_.hardware_parameters["micro_run_freq"]);
 		serial_port_name = info_.hardware_parameters["serial_port"];
@@ -154,9 +154,9 @@ namespace oscar_hardware_intf
 						joint.command_interfaces[0].name.c_str(), hardware_interface::HW_IF_POSITION);
 				return hardware_interface::CallbackReturn::ERROR;
 			}
-			RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"),
-					"4"
-					);
+//			RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"),
+//					"4"
+//					);
 			if(joint.state_interfaces[1].name != hardware_interface::HW_IF_VELOCITY)
 			{
 				RCLCPP_FATAL(
@@ -165,13 +165,13 @@ namespace oscar_hardware_intf
 						joint.state_interfaces[1].name.c_str(), hardware_interface::HW_IF_VELOCITY);
 				return hardware_interface::CallbackReturn::ERROR;
 			}
-			RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"),
-					"5"
-					);
+//			RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"),
+//					"5"
+//					);
 		}
-		RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"),
-				"Init completed successfully"
-				);
+//		RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"),
+//				"Init completed successfully"
+//				);
 		return hardware_interface::CallbackReturn::SUCCESS;
 	}
 
@@ -250,10 +250,10 @@ namespace oscar_hardware_intf
 			hw_positions_[i] += hw_velocities_[i] * period.seconds();
 
 			// BEGIN: This part here is for exemplary purposes - Please do not copy to your production code
-			RCLCPP_INFO(
-					rclcpp::get_logger("DiffBotSystemHardware"),
-					"Got position state %.5f and velocity state %.5f for '%s'!", hw_positions_[i],
-					hw_velocities_[i], info_.joints[i].name.c_str());
+//			RCLCPP_INFO(
+//					rclcpp::get_logger("DiffBotSystemHardware"),
+//					"Got position state %.5f and velocity state %.5f for '%s'!", hw_positions_[i],
+//					hw_velocities_[i], info_.joints[i].name.c_str());
 			// END: This part here is for exemplary purposes - Please do not copy to your production code
 		}
 
@@ -261,11 +261,11 @@ namespace oscar_hardware_intf
 	}
 	hardware_interface::return_type OscarHardwareIntf::write(const rclcpp::Time &, const rclcpp::Duration &)
 	{
-		RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"), "Writing...");
+		//RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"), "Writing...");
 
 		for(auto i=0u; i < hw_commands_.size(); i++)
 		{
-			RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"), "Got command %.5f for '%s'!", hw_commands_[i], info_.joints[i].name.c_str());
+			//RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"), "Got command %.5f for '%s'!", hw_commands_[i], info_.joints[i].name.c_str());
 		}
 
 		float cmds[4];
@@ -274,7 +274,7 @@ namespace oscar_hardware_intf
 		}
 
 		handle_serial_write(serial_port, cmds);
-		RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"), "Joint States Written");
+		//RCLCPP_INFO(rclcpp::get_logger("OscarHardwareIntf"), "Joint States Written");
 		return hardware_interface::return_type::OK;
 	}
 
