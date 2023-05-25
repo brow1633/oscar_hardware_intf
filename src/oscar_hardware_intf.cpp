@@ -98,15 +98,15 @@ namespace oscar_hardware_intf
 
 		//hw_start_sec_ = std::stod(info_.hardware_parameters["example_param_hw_start_duration_sec"]); // how to parameter
 		//hw_stop_sec_ = std::stod(info_.hardware_parameters["example_param_hw_stop_duration_sec"]); // how to parameter
-//		RCLCPP_INFO(
-//				rclcpp::get_logger("OscarHardwareIntf"),
-//				"encoder_cpr: %s", info_.hardware_parameters["encoder_cpr"].c_str());
-//		RCLCPP_INFO(
-//				rclcpp::get_logger("OscarHardwareIntf"),
-//				"micro_run_freq: %s", info_.hardware_parameters["micro_run_freq"].c_str());
-//		RCLCPP_INFO(
-//				rclcpp::get_logger("OscarHardwareIntf"),
-//				"serial_port_name: %s", info_.hardware_parameters["serial_port"].c_str());
+  		RCLCPP_INFO(
+  				rclcpp::get_logger("OscarHardwareIntf"),
+  				"encoder_cpr: %s", info_.hardware_parameters["encoder_cpr"].c_str());
+  		RCLCPP_INFO(
+  				rclcpp::get_logger("OscarHardwareIntf"),
+  				"micro_run_freq: %s", info_.hardware_parameters["micro_run_freq"].c_str());
+  		RCLCPP_INFO(
+  				rclcpp::get_logger("OscarHardwareIntf"),
+  				"serial_port_name: %s", info_.hardware_parameters["serial_port"].c_str());
 		encoder_cpr = std::stod(info_.hardware_parameters["encoder_cpr"]);
 		micro_run_freq = std::stod(info_.hardware_parameters["micro_run_freq"]);
 		serial_port_name = info_.hardware_parameters["serial_port"];
@@ -246,14 +246,14 @@ namespace oscar_hardware_intf
 		}
 		for (uint8_t i = 0; i < hw_commands_.size(); i++)
 		{
-			hw_velocities_[i] = (counts[i] / encoder_cpr) * micro_run_freq * 6.28;
+			hw_velocities_[i] = (counts[i] * micro_run_freq * 6.28) / encoder_cpr;
 			hw_positions_[i] += hw_velocities_[i] * period.seconds();
 
 			// BEGIN: This part here is for exemplary purposes - Please do not copy to your production code
-//			RCLCPP_INFO(
-//					rclcpp::get_logger("DiffBotSystemHardware"),
-//					"Got position state %.5f and velocity state %.5f for '%s'!", hw_positions_[i],
-//					hw_velocities_[i], info_.joints[i].name.c_str());
+  			/*RCLCPP_INFO(
+  					rclcpp::get_logger("DiffBotSystemHardware"),
+  					"Got position state %.5f and velocity state %.5f for '%s'!", hw_positions_[i],
+  					hw_velocities_[i], info_.joints[i].name.c_str());*/
 			// END: This part here is for exemplary purposes - Please do not copy to your production code
 		}
 
@@ -270,7 +270,7 @@ namespace oscar_hardware_intf
 
 		float cmds[4];
 		for(int i = 0; i < 4; i++) {
-			cmds[i] = hw_commands_[i] * encoder_cpr / (micro_run_freq) / (6.28); // send cmds in ticks/cycle
+			cmds[i] = (hw_commands_[i] * encoder_cpr) / (micro_run_freq) / (6.28); // send cmds in ticks/cycle
 		}
 
 		handle_serial_write(serial_port, cmds);
