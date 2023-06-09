@@ -49,7 +49,7 @@ namespace oscar_hardware_intf
 
 		tty.c_cflag &= ~PARENB; // Clear parity bit, disabling parity (most common)
 		tty.c_cflag &= ~CSTOPB; // Clear stop field, only one stop bit used in communication (most common)
-		tty.c_cflag &= ~CSIZE; // Clear all bits that set the data size 
+		tty.c_cflag &= ~CSIZE; // Clear all bits that set the data size
 		tty.c_cflag |= CS8; // 8 bits per byte (most common)
 		tty.c_cflag &= ~CRTSCTS; // Disable RTS/CTS hardware flow control (most common)
 		tty.c_cflag |= CREAD | CLOCAL; // Turn on READ & ignore ctrl lines (CLOCAL = 1)
@@ -107,10 +107,31 @@ namespace oscar_hardware_intf
   		RCLCPP_INFO(
   				rclcpp::get_logger("OscarHardwareIntf"),
   				"serial_port_name: %s", info_.hardware_parameters["serial_port"].c_str());
+  		RCLCPP_INFO(
+  				rclcpp::get_logger("OscarHardwareIntf"),
+  				"kp: %s", info_.hardware_parameters["kp"].c_str());
+  		RCLCPP_INFO(
+  				rclcpp::get_logger("OscarHardwareIntf"),
+  				"ki: %s", info_.hardware_parameters["ki"].c_str());
+  		RCLCPP_INFO(
+  				rclcpp::get_logger("OscarHardwareIntf"),
+  				"kd: %s", info_.hardware_parameters["kd"].c_str());
+  		RCLCPP_INFO(
+  				rclcpp::get_logger("OscarHardwareIntf"),
+  				"max_integral: %s", info_.hardware_parameters["max_integral"].c_str());
 		encoder_cpr = std::stod(info_.hardware_parameters["encoder_cpr"]);
 		micro_run_freq = std::stod(info_.hardware_parameters["micro_run_freq"]);
 		serial_port_name = info_.hardware_parameters["serial_port"];
+
+        kp = std::stof(info_.hardware_parameters["kp"]);
+        ki = std::stof(info_.hardware_parameters["ki"]);
+        kd = std::stof(info_.hardware_parameters["kd"]);
+        max_integral = std::stof(info_.hardware_parameters["max_integral"]);
 		setup_serial();
+
+        // Write PID vals
+        float pidVals[] = {kp, ki, kd, max_integral};
+		handle_serial_write(serial_port, pidVals);
 
 		hw_positions_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
 		hw_velocities_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
