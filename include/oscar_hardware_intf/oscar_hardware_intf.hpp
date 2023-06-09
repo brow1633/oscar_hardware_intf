@@ -51,6 +51,7 @@ namespace oscar_hardware_intf
 		float encoder_cpr;
 		int micro_run_freq;
 		std::string serial_port_name;
+		float kp, ki, kd, max_integral;
 		float last_pos;
 
 		std::vector<double> hw_commands_;
